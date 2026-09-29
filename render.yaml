@@ -1,0 +1,21 @@
+# Render.com Blueprint config — free tier + Supabase Postgres
+# Data persists in Supabase. App is stateless. Sleeps after 15 min idle.
+# GitHub Actions cron (.github/workflows/scraper.yml) keeps it warm + scrapes.
+
+services:
+  - type: web
+    name: jetluxeco-empty-legs
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 60
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: SCRAPE_TOKEN
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false                  # set this manually in Render dashboard to your Supabase pooler URL
+      - key: AUTH_PASSWORD
+        sync: false                  # set this manually to your chosen dashboard password
+    autoDeploy: true
