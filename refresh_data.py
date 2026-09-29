@@ -36,7 +36,7 @@ cur.execute("""
     WHERE active=TRUE AND depart_date >= CURRENT_DATE
       AND source != 'adsb-live'
     ORDER BY depart_date, origin
-    LIMIT 500
+    LIMIT 2000
 """)
 legs = []
 for r in cur.fetchall():
