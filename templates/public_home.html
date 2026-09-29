@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JETLUXECO — Private Aviation, Brokered For You</title>
+<meta name="description" content="Independent private jet broker serving Broward County and beyond. Live empty leg inventory from every major operator. No membership fees, no markup games.">
+<meta property="og:title" content="JETLUXECO — Private Aviation, Brokered For You">
+<meta property="og:description" content="Live empty leg deals from every major operator. Independent broker, no membership fees.">
+<meta property="og:type" content="website">
+<style>
+  :root {
+    --bg:#0a0a0a; --surface:#141414; --surface-2:#1c1c1c;
+    --border:#2a2a2a; --text:#f5f5f5; --text-muted:#888;
+    --gold:#AE7640; --gold-soft:#c89868;
+    --green:#5cb85c;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--text); font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+
+  /* Nav */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); padding: 18px 40px; display: flex; justify-content: space-between; align-items: center; }
+  nav .logo { font-size: 18px; font-weight: 300; letter-spacing: 6px; }
+  nav .logo .sub { display: block; font-size: 8px; letter-spacing: 3px; color: var(--gold); margin-top: 2px; }
+  nav ul { display: flex; gap: 32px; list-style: none; }
+  nav a { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); transition: color .2s; }
+  nav a:hover { color: var(--gold); }
+  nav .cta { border: 1px solid var(--gold); color: var(--gold); padding: 10px 22px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; transition: all .2s; }
+  nav .cta:hover { background: var(--gold); color: #000; }
+
+  /* Hero */
+  .hero { min-height: 100vh; display: flex; align-items: center; padding: 0 40px; position: relative; overflow: hidden; }
+  .hero::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 70% 50%, rgba(174, 118, 64, 0.12) 0%, transparent 60%), linear-gradient(180deg, transparent 60%, #000 100%); pointer-events: none; }
+  .hero-inner { max-width: 1400px; margin: 0 auto; width: 100%; position: relative; z-index: 2; }
+  .hero-logo { font-size: 72px; font-weight: 200; letter-spacing: 12px; margin-bottom: 8px; }
+  .hero-sub { font-size: 11px; letter-spacing: 6px; color: var(--gold); margin-bottom: 60px; }
+  .hero-tagline { font-size: 56px; font-weight: 200; line-height: 1.15; max-width: 800px; margin-bottom: 32px; }
+  .hero-tagline em { color: var(--gold); font-style: normal; }
+  .hero-lede { font-size: 16px; color: var(--text-muted); max-width: 560px; line-height: 1.7; margin-bottom: 48px; }
+  .hero-actions { display: flex; gap: 16px; }
+  .btn { display: inline-block; padding: 18px 36px; font-size: 12px; letter-spacing: 3px; text-transform: uppercase; border: 1px solid var(--border); transition: all .2s; cursor: pointer; }
+  .btn.primary { background: var(--gold); color: #000; border-color: var(--gold); }
+  .btn.primary:hover { background: var(--gold-soft); }
+  .btn:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* Sections */
+  section { padding: 120px 40px; }
+  .section-inner { max-width: 1400px; margin: 0 auto; }
+  .section-eyebrow { font-size: 10px; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; margin-bottom: 16px; }
+  .section-title { font-size: 40px; font-weight: 300; letter-spacing: 1px; margin-bottom: 48px; max-width: 800px; }
+
+  /* Three-column pitch */
+  .pitch { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; }
+  .pitch-col h3 { font-size: 22px; font-weight: 400; margin-bottom: 16px; }
+  .pitch-col h3 span { color: var(--gold); margin-right: 12px; font-family: 'Courier New', monospace; font-size: 14px; }
+  .pitch-col p { color: var(--text-muted); line-height: 1.7; font-size: 15px; }
+
+  /* Live legs */
+  .legs-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .legs-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 48px; }
+  .legs-live-indicator { display: inline-flex; align-items: center; gap: 8px; color: var(--green); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+  .live-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+  .legs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
+  .leg-card { background: var(--bg); border: 1px solid var(--border); padding: 28px; transition: all .25s; position: relative; }
+  .leg-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+  .leg-source { position: absolute; top: 16px; right: 20px; font-size: 9px; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; }
+  .leg-route { font-size: 22px; letter-spacing: 2px; margin-bottom: 4px; font-weight: 400; }
+  .leg-route .arrow { color: var(--gold); margin: 0 8px; }
+  .leg-cities { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
+  .leg-meta { display: flex; gap: 24px; margin: 20px 0; padding: 16px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .leg-meta-item .label { font-size: 9px; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+  .leg-meta-item .value { font-size: 14px; font-weight: 500; }
+  .leg-price { color: var(--gold); font-size: 22px; font-weight: 300; margin-top: 16px; }
+  .leg-price small { color: var(--text-muted); font-size: 11px; font-weight: 400; margin-left: 6px; letter-spacing: 1px; }
+  .leg-cta { display: block; margin-top: 20px; text-align: center; padding: 12px; border: 1px solid var(--border); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; transition: all .2s; }
+  .leg-cta:hover { background: var(--gold); color: #000; border-color: var(--gold); }
+  .legs-loading { text-align: center; padding: 60px; color: var(--text-muted); }
+  .legs-view-all { text-align: center; margin-top: 48px; }
+
+  /* Aircraft grid */
+  .aircraft-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .aircraft-card { border: 1px solid var(--border); padding: 32px; transition: all .2s; }
+  .aircraft-card:hover { border-color: var(--gold); }
+  .aircraft-card h3 { font-size: 18px; font-weight: 400; letter-spacing: 1px; margin-bottom: 8px; }
+  .aircraft-card .price { color: var(--gold); font-size: 13px; letter-spacing: 1px; margin-bottom: 16px; }
+  .aircraft-card p { color: var(--text-muted); font-size: 13px; line-height: 1.7; }
+
+  /* Contact */
+  .contact-section { background: var(--surface); }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .contact-item { padding: 20px 0; border-bottom: 1px solid var(--border); }
+  .contact-item .label { font-size: 10px; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; margin-bottom: 6px; }
+  .contact-item .value { font-size: 20px; font-weight: 300; }
+  .contact-item a:hover { color: var(--gold); }
+
+  /* Footer */
+  footer { padding: 60px 40px 40px; border-top: 1px solid var(--border); text-align: center; }
+  footer .legal { font-size: 11px; color: var(--text-muted); line-height: 1.8; max-width: 720px; margin: 0 auto 24px; }
+  footer .copyright { font-size: 10px; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; }
+
+  /* Mobile */
+  @media (max-width: 900px) {
+    nav { padding: 14px 20px; }
+    nav ul { display: none; }
+    .hero { padding: 100px 20px 60px; }
+    .hero-logo { font-size: 44px; letter-spacing: 8px; }
+    .hero-tagline { font-size: 34px; }
+    section { padding: 60px 20px; }
+    .section-title { font-size: 28px; }
+    .pitch, .aircraft-grid, .contact-grid { grid-template-columns: 1fr; gap: 24px; }
+    .legs-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    JETLUXECO
+    <span class="sub">PRIVATE AVIATION</span>
+  </div>
+  <ul>
+    <li><a href="#legs">Empty Legs</a></li>
+    <li><a href="#aircraft">Aircraft</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="cta">Request Quote</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-logo">JETLUXECO</div>
+    <div class="hero-sub">PRIVATE AVIATION BROKERAGE</div>
+    <h1 class="hero-tagline">Private aviation,<br><em>brokered for you.</em></h1>
+    <p class="hero-lede">Independent broker in Broward County. Live inventory from every major operator. No membership fees. No markup games. Real people, real negotiations.</p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn primary">Request a Quote</a>
+      <a href="#legs" class="btn">View Empty Legs</a>
+    </div>
+  </div>
+</section>
+
+<section id="pitch">
+  <div class="section-inner">
+    <div class="section-eyebrow">Why JETLUXECO</div>
+    <h2 class="section-title">Three reasons brokers matter more than apps.</h2>
+    <div class="pitch">
+      <div class="pitch-col">
+        <h3><span>01</span>Every operator</h3>
+        <p>We're not tied to one fleet. Every empty leg from every major operator in North America and Europe, refreshed live. If a better deal exists, you get it.</p>
+      </div>
+      <div class="pitch-col">
+        <h3><span>02</span>No membership</h3>
+        <p>Jet cards and memberships lock capital and add cost. As an independent broker, you only pay when you fly — no hourly commitments, no annual fees.</p>
+      </div>
+      <div class="pitch-col">
+        <h3><span>03</span>Real negotiation</h3>
+        <p>We know operator pricing. We know when they'll discount and by how much. Your quote isn't an algorithm — it's a broker on the phone getting you the number that works.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="legs" class="legs-section">
+  <div class="section-inner">
+    <div class="legs-header">
+      <div>
+        <div class="legs-live-indicator"><span class="live-dot"></span>Live inventory</div>
+        <div class="section-eyebrow">Empty Legs</div>
+        <h2 class="section-title" style="margin-bottom: 0;">Current deals across the network.</h2>
+      </div>
+    </div>
+    <div id="legs-grid" class="legs-grid">
+      <div class="legs-loading">Loading current inventory…</div>
+    </div>
+    <div class="legs-view-all">
+      <a href="/site/legs" class="btn">View all empty legs →</a>
+    </div>
+  </div>
+</section>
+
+<section id="aircraft">
+  <div class="section-inner">
+    <div class="section-eyebrow">Fleet Access</div>
+    <h2 class="section-title">Every category, every range.</h2>
+    <div class="aircraft-grid">
+      <div class="aircraft-card">
+        <h3>Very Light Jets</h3>
+        <div class="price">$2,400–3,300 / hr wholesale</div>
+        <p>Cirrus Vision SF50, Phenom 100, Citation Mustang, HondaJet. 4 pax, 1,000 NM range. Perfect for regional hops.</p>
+      </div>
+      <div class="aircraft-card">
+        <h3>Light Jets</h3>
+        <div class="price">$2,700–4,300 / hr wholesale</div>
+        <p>Citation CJ2/3/4, Phenom 300, Learjet 40/45. 7 pax, 1,700 NM range. The daily-driver of business aviation.</p>
+      </div>
+      <div class="aircraft-card">
+        <h3>Midsize Jets</h3>
+        <div class="price">$3,500–6,800 / hr wholesale</div>
+        <p>Citation XLS+, Hawker 850, Learjet 60, Citation Excel. 8 pax, 2,500 NM range. NYC to Miami non-stop.</p>
+      </div>
+      <div class="aircraft-card">
+        <h3>Super-Midsize</h3>
+        <div class="price">$6,000–8,500 / hr wholesale</div>
+        <p>Challenger 350/3500, Praetor 600, Citation Longitude. 9 pax, 3,500 NM range. Coast-to-coast comfortable.</p>
+      </div>
+      <div class="aircraft-card">
+        <h3>Heavy Jets</h3>
+        <div class="price">$7,000–12,000 / hr wholesale</div>
+        <p>Challenger 650, Falcon 2000, Gulfstream G280, Legacy 600. 12 pax, 4,500 NM. Miami to Europe.</p>
+      </div>
+      <div class="aircraft-card">
+        <h3>Ultra-Long Range</h3>
+        <div class="price">$9,500–17,000 / hr wholesale</div>
+        <p>Gulfstream G650, Global 6000/7500, Falcon 7X/8X. 14 pax, 7,500 NM. Anywhere, non-stop.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="section-inner">
+    <div class="section-eyebrow">About</div>
+    <h2 class="section-title">Broward-based. Independent. Compliant.</h2>
+    <div style="max-width: 720px;">
+      <p style="color: var(--text-muted); font-size: 17px; line-height: 1.8; margin-bottom: 24px;">
+        JETLUXECO is a licensed indirect air carrier and charter broker operating under 14 CFR Part 295, based in Broward County, Florida. Sister brand to YACHTLUXE.
+      </p>
+      <p style="color: var(--text-muted); font-size: 17px; line-height: 1.8;">
+        We don't own aircraft. We don't sell memberships. What we do is negotiate every leg against every available operator, using real-time inventory feeds and direct operator relationships, so you fly for what the market actually costs — not what an app decides to show you.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact-section">
+  <div class="section-inner">
+    <div class="contact-grid">
+      <div>
+        <div class="section-eyebrow">Contact</div>
+        <h2 class="section-title" style="margin-bottom: 24px;">Request a quote.</h2>
+        <p style="color: var(--text-muted); font-size: 16px; line-height: 1.7; margin-bottom: 32px;">
+          Send us your route, dates, and passenger count. We'll come back within an hour during business hours with real quotes from real operators.
+        </p>
+      </div>
+      <div>
+        <div class="contact-item">
+          <div class="label">Email</div>
+          <div class="value"><a href="mailto:luis@jetluxeco.com">luis@jetluxeco.com</a></div>
+        </div>
+        <div class="contact-item">
+          <div class="label">Phone / SMS</div>
+          <div class="value"><a href="tel:+19549999999">+1 (954) ●●●-●●●●</a></div>
+        </div>
+        <div class="contact-item">
+          <div class="label">WhatsApp</div>
+          <div class="value"><a href="https://wa.me/19549999999">Message on WhatsApp →</a></div>
+        </div>
+        <div class="contact-item">
+          <div class="label">Location</div>
+          <div class="value">Broward County, Florida</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p class="legal">
+    JETLUXECO LLC · Broward County, Florida · Licensed indirect air carrier and charter broker under 14 CFR Part 295.
+    All flights arranged by JETLUXECO are operated by FAA Part 135 or Part 121 certificated air carriers.
+    JETLUXECO does not own or operate aircraft. Prices are subject to operator availability and confirmation.
+  </p>
+  <div class="copyright">© 2026 JETLUXECO LLC — All Rights Reserved</div>
+</footer>
+
+<script>
+async function loadLegs() {
+  try {
+    const res = await fetch('/site/api/featured-legs');
+    const data = await res.json();
+    const grid = document.getElementById('legs-grid');
+    if (!data.legs || !data.legs.length) {
+      grid.innerHTML = '<div class="legs-loading">No public empty legs at the moment — call us for custom quotes.</div>';
+      return;
+    }
+    grid.innerHTML = data.legs.map(l => {
+      const price = l.price_usd
+        ? '$' + Math.round(l.price_usd).toLocaleString() + ' <small>USD</small>'
+        : '<small style="color:var(--text-muted);font-size:14px">Quote on request</small>';
+      const date = l.depart_date ? new Date(l.depart_date + 'T00:00:00').toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'}) : '—';
+      const contactMsg = encodeURIComponent(
+        `Hi Luis — I'd like to book the empty leg ${l.origin} → ${l.destination} on ${date} (${l.aircraft || 'aircraft TBD'}). Is it still available?`
+      );
+      return `
+      <div class="leg-card">
+        <div class="leg-source">${l.source || ''}</div>
+        <div class="leg-route">${l.origin}<span class="arrow">→</span>${l.destination}</div>
+        <div class="leg-cities">${l.origin_city || ''}${l.destination_city ? ' → ' + l.destination_city : ''}</div>
+        <div class="leg-meta">
+          <div class="leg-meta-item">
+            <div class="label">Date</div>
+            <div class="value">${date}</div>
+          </div>
+          <div class="leg-meta-item">
+            <div class="label">Aircraft</div>
+            <div class="value">${l.aircraft || '—'}</div>
+          </div>
+          <div class="leg-meta-item">
+            <div class="label">Seats</div>
+            <div class="value">${l.pax || '—'}</div>
+          </div>
+        </div>
+        <div class="leg-price">${price}</div>
+        <a href="https://wa.me/19549999999?text=${contactMsg}" class="leg-cta" target="_blank">Reserve this leg →</a>
+      </div>`;
+    }).join('');
+  } catch (e) {
+    document.getElementById('legs-grid').innerHTML =
+      '<div class="legs-loading">Unable to load inventory. <a href="#contact" style="color:var(--gold)">Contact us directly →</a></div>';
+  }
+}
+loadLegs();
+</script>
+
+</body>
+</html>

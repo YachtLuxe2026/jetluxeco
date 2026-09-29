@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JETLUXECO — Operator Directory</title>
+<style>
+  :root { --bg:#0a0a0a; --surface:#141414; --surface-2:#1c1c1c; --border:#2a2a2a; --text:#f5f5f5; --text-muted:#888; --gold:#AE7640; --gold-soft:#c89868; --green:#5cb85c; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--text); font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+  .container { max-width: 1500px; margin: 0 auto; padding: 32px 24px; }
+  header { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 24px; border-bottom: 1px solid var(--gold); margin-bottom: 28px; }
+  .brand h1 { font-size: 32px; letter-spacing: 6px; font-weight: 300; }
+  .brand .sub { font-size: 10px; letter-spacing: 4px; color: var(--gold); margin-top: 4px; }
+  .actions { display: flex; gap: 12px; }
+  .btn { background: transparent; border: 1px solid var(--border); color: var(--text); padding: 10px 18px; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn:hover { border-color: var(--gold); color: var(--gold); }
+  .btn.primary { background: var(--gold); color: #000; border-color: var(--gold); }
+  .btn.primary:hover { background: var(--gold-soft); }
+  .nav-tabs { display: flex; gap: 16px; margin-bottom: 20px; }
+  .nav-tabs a { font-size: 11px; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; text-decoration: none; padding: 6px 0; border-bottom: 2px solid transparent; }
+  .nav-tabs a.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .nav-tabs a:hover { color: var(--gold); }
+  .filters { background: var(--surface); border: 1px solid var(--border); padding: 20px; margin-bottom: 24px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .filters label { display: flex; flex-direction: column; font-size: 10px; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; }
+  .filters input, .filters select { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 10px; margin-top: 6px; font-family: inherit; font-size: 14px; }
+  .filters input:focus, .filters select:focus { outline: none; border-color: var(--gold); }
+  .stats-bar { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
+  .stats-bar .count { color: var(--gold); font-weight: 500; }
+  .table-wrap { background: var(--surface); border: 1px solid var(--border); overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-size: 10px; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; padding: 12px; border-bottom: 1px solid var(--border); background: var(--surface-2); }
+  td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: top; }
+  tr:hover td { background: var(--surface-2); }
+  .op-name { font-weight: 500; }
+  .op-base { font-family: 'SF Mono', Menlo, monospace; color: var(--gold); }
+  .op-city { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .region-pill { display: inline-block; font-size: 10px; letter-spacing: 1px; padding: 3px 8px; border: 1px solid var(--gold); border-radius: 2px; color: var(--gold); text-transform: uppercase; }
+  .verified-badge { display: inline-block; font-size: 9px; letter-spacing: 1px; padding: 2px 6px; border-radius: 2px; text-transform: uppercase; margin-top: 4px; }
+  .verified-badge.yes { background: rgba(92, 184, 92, 0.18); border: 1px solid var(--green); color: var(--green); }
+  .verified-badge.no  { background: rgba(240, 173, 78, 0.15); border: 1px solid #f0ad4e; color: #f0ad4e; }
+  .contact a { color: var(--gold); text-decoration: none; font-size: 12px; display: block; }
+  .contact a:hover { text-decoration: underline; }
+  .fleet-notes { font-size: 11px; color: var(--text-muted); max-width: 260px; }
+  .empty-state { padding: 60px; text-align: center; color: var(--text-muted); }
+  .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-muted); display: flex; justify-content: space-between; }
+  .footer a { color: var(--gold); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="brand">
+      <h1>JETLUXECO</h1>
+      <div class="sub">OPERATOR DIRECTORY</div>
+    </div>
+    <div class="actions">
+      <a class="btn" href="/">← Back to legs</a>
+      <a class="btn primary" id="export-btn" href="/operators/export.csv">⬇ Export CSV</a>
+    </div>
+  </header>
+
+  <div class="nav-tabs">
+    <a href="/">EMPTY LEGS</a>
+    <a href="/operators" class="active">OPERATOR DIRECTORY</a>
+    <a href="/pricing">PRICING INTELLIGENCE</a>
+  </div>
+
+  <div class="filters">
+    <label>Search<input id="f-search" type="text" placeholder="Name or city..." oninput="loadOps()"></label>
+    <label>Region<select id="f-region" onchange="loadOps()"><option value="">All regions</option></select></label>
+    <label>Home base (ICAO)<select id="f-base" onchange="loadOps()"><option value="">All bases</option></select></label>
+    <label>&nbsp;<button class="btn" onclick="clearFilters()">Clear filters</button></label>
+  </div>
+
+  <div class="stats-bar">
+    <div>Showing <span class="count" id="op-count">0</span> operators · ready to email-blast for quotes</div>
+    <div>Tip: filter by region or home base → Export CSV → mail-merge in your email client</div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th>Operator</th><th>Home base</th><th>Region</th><th>Phone</th><th>Email</th><th>Fleet</th>
+      </tr></thead>
+      <tbody id="ops-body">
+        <tr><td colspan="6" class="empty-state">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    <div>JETLUXECO LLC · Broward County, FL · <a href="mailto:luis@jetluxeco.com">luis@jetluxeco.com</a></div>
+    <div>Mass quote-request workflow: filter → export → mail-merge</div>
+  </div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const escape = (s) => (s || '').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+
+async function loadOps() {
+  const params = new URLSearchParams();
+  const q = $('f-search').value.trim(); if (q) params.set('q', q);
+  const region = $('f-region').value.trim(); if (region) params.set('region', region);
+  const base = $('f-base').value.trim(); if (base) params.set('home_base', base);
+  // update export link too
+  $('export-btn').href = '/operators/export.csv?' + params.toString();
+
+  try {
+    const res = await fetch('/api/operators?' + params.toString());
+    const data = await res.json();
+    populateFilters(data);
+    renderOps(data.operators);
+  } catch (e) {
+    $('ops-body').innerHTML = '<tr><td colspan="6" class="empty-state">Error: ' + e.message + '</td></tr>';
+  }
+}
+
+function populateFilters(data) {
+  // Populate region dropdown if empty
+  const regionSel = $('f-region');
+  if (regionSel.children.length <= 1 && data.regions) {
+    data.regions.forEach(r => {
+      const o = document.createElement('option'); o.value = r; o.textContent = r;
+      regionSel.appendChild(o);
+    });
+  }
+  const baseSel = $('f-base');
+  if (baseSel.children.length <= 1 && data.home_bases) {
+    data.home_bases.forEach(b => {
+      const o = document.createElement('option'); o.value = b.home_base; o.textContent = `${b.home_base} (${b.count})`;
+      baseSel.appendChild(o);
+    });
+  }
+}
+
+function renderOps(ops) {
+  $('op-count').textContent = ops.length;
+  if (!ops.length) {
+    $('ops-body').innerHTML = '<tr><td colspan="6" class="empty-state">No operators match. Clear filters or check the seed file.</td></tr>';
+    return;
+  }
+  $('ops-body').innerHTML = ops.map(op => {
+    const verifiedBadge = op.verified_at
+      ? `<div class="verified-badge yes">✓ verified ${new Date(op.verified_at).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</div>`
+      : `<div class="verified-badge no">⚠ unverified — confirm before contacting</div>`;
+    return `
+    <tr>
+      <td>
+        <div class="op-name">${escape(op.name)}</div>
+        ${op.website ? `<a href="${escape(op.website)}" target="_blank" rel="noopener" style="font-size:11px;color:var(--text-muted);text-decoration:none;">${escape(op.website.replace(/^https?:\\/\\//, ''))}</a>` : ''}
+        ${verifiedBadge}
+      </td>
+      <td>
+        <div class="op-base">${escape(op.home_base || '—')}</div>
+        <div class="op-city">${escape(op.home_base_city || '')}</div>
+      </td>
+      <td><span class="region-pill">${escape(op.region || '—')}</span></td>
+      <td class="contact">${op.phone ? `<a href="tel:${escape(op.phone)}">${escape(op.phone)}</a>` : '—'}</td>
+      <td class="contact">${op.email ? `<a href="mailto:${escape(op.email)}">${escape(op.email)}</a>` : '—'}</td>
+      <td class="fleet-notes">${escape(op.fleet_notes || '')}</td>
+    </tr>`;
+  }).join('');
+}
+
+function clearFilters() {
+  $('f-search').value = '';
+  $('f-region').value = '';
+  $('f-base').value = '';
+  loadOps();
+}
+
+loadOps();
+</script>
+</body>
+</html>

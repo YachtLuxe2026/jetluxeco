@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JETLUXECO — Pricing Intelligence</title>
+<style>
+  :root { --bg:#0a0a0a; --surface:#141414; --surface-2:#1c1c1c; --border:#2a2a2a; --text:#f5f5f5; --text-muted:#888; --gold:#AE7640; --gold-soft:#c89868; --green:#5cb85c; --red:#d9534f; --yellow:#f0ad4e; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--text); font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+  .container { max-width: 1500px; margin: 0 auto; padding: 32px 24px; }
+  header { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 24px; border-bottom: 1px solid var(--gold); margin-bottom: 28px; }
+  .brand h1 { font-size: 32px; letter-spacing: 6px; font-weight: 300; }
+  .brand .sub { font-size: 10px; letter-spacing: 4px; color: var(--gold); margin-top: 4px; }
+  .btn { background: transparent; border: 1px solid var(--border); color: var(--text); padding: 10px 18px; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn:hover { border-color: var(--gold); color: var(--gold); }
+  .btn.primary { background: var(--gold); color: #000; border-color: var(--gold); }
+  .nav-tabs { display: flex; gap: 16px; margin-bottom: 24px; }
+  .nav-tabs a { font-size: 11px; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; text-decoration: none; padding: 6px 0; border-bottom: 2px solid transparent; }
+  .nav-tabs a.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .nav-tabs a:hover { color: var(--gold); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+  .panel { background: var(--surface); border: 1px solid var(--border); padding: 24px; }
+  .panel h2 { font-size: 14px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+  .panel .desc { font-size: 12px; color: var(--text-muted); margin-bottom: 18px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .form-row.three { grid-template-columns: 2fr 1fr 1fr; }
+  label { display: flex; flex-direction: column; font-size: 10px; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; }
+  input, select { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 10px; margin-top: 6px; font-family: inherit; font-size: 14px; }
+  input:focus, select:focus { outline: none; border-color: var(--gold); }
+  .result { background: var(--surface-2); border: 1px solid var(--gold); padding: 18px; margin-top: 14px; font-size: 14px; }
+  .result .big { font-size: 24px; font-weight: 300; color: var(--gold); margin: 8px 0; }
+  .result .row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 13px; color: var(--text-muted); }
+  .result .row .val { color: var(--text); }
+  .verdict { font-size: 14px; font-weight: 500; padding: 12px; margin-top: 12px; border-radius: 2px; }
+  .verdict.green { background: rgba(92, 184, 92, 0.15); border-left: 3px solid var(--green); color: var(--green); }
+  .verdict.yellow { background: rgba(240, 173, 78, 0.15); border-left: 3px solid var(--yellow); color: var(--yellow); }
+  .verdict.red { background: rgba(217, 83, 79, 0.15); border-left: 3px solid var(--red); color: var(--red); }
+  table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  th { text-align: left; font-size: 10px; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; padding: 12px 8px; border-bottom: 1px solid var(--border); background: var(--surface-2); }
+  td { padding: 12px 8px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: top; }
+  .cat-label { font-weight: 500; }
+  .cat-examples { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .rate-cell { font-family: 'SF Mono', Menlo, monospace; }
+  .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-muted); display: flex; justify-content: space-between; }
+  .footer a { color: var(--gold); text-decoration: none; }
+  .source-note { font-size: 10px; color: var(--text-muted); font-style: italic; margin-top: 8px; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="brand">
+      <h1>JETLUXECO</h1>
+      <div class="sub">PRICING INTELLIGENCE</div>
+    </div>
+    <div><a class="btn" href="/">← Empty legs</a></div>
+  </header>
+
+  <div class="nav-tabs">
+    <a href="/">EMPTY LEGS</a>
+    <a href="/operators">OPERATOR DIRECTORY</a>
+    <a href="/pricing" class="active">PRICING INTELLIGENCE</a>
+  </div>
+
+  <div class="grid">
+
+    <!-- LEFT: Client Quote Calculator -->
+    <div class="panel">
+      <h2>Client Quote Calculator</h2>
+      <div class="desc">Operator just quoted you wholesale → what to charge the client?</div>
+      <div class="form-row three">
+        <label>Aircraft type / model<input id="c-aircraft" placeholder="Challenger 350" value="Challenger 350"></label>
+        <label>Flight hours<input id="c-hours" type="number" step="0.1" value="2.5"></label>
+        <label>Your margin %<input id="c-margin" type="number" step="0.5" value="12"></label>
+      </div>
+      <button class="btn primary" onclick="calcQuote()">Calculate</button>
+      <div id="c-result"></div>
+    </div>
+
+    <!-- RIGHT: Operator Quote Validator -->
+    <div class="panel">
+      <h2>Operator Quote Validator</h2>
+      <div class="desc">Operator quoted you $X total — is it at market, above, or below?</div>
+      <div class="form-row three">
+        <label>Aircraft type / model<input id="v-aircraft" placeholder="Challenger 350" value="Challenger 350"></label>
+        <label>Flight hours<input id="v-hours" type="number" step="0.1" value="2.5"></label>
+        <label>Operator quote ($)<input id="v-quoted" type="number" step="100" value="18500"></label>
+      </div>
+      <button class="btn primary" onclick="validateQuote()">Validate</button>
+      <div id="v-result"></div>
+    </div>
+
+  </div>
+
+  <!-- Rate reference table -->
+  <div class="panel">
+    <h2>2026 Market Rate Reference (Wholesale)</h2>
+    <div class="desc">Per-hour wholesale rates (what you should expect to pay operators). Retail / charter rate to client is typically 10-20% higher.</div>
+    <table id="rates-table">
+      <thead><tr>
+        <th>Category</th>
+        <th>Cruise / Pax</th>
+        <th>Wholesale / hr</th>
+        <th>Retail / hr (client)</th>
+      </tr></thead>
+      <tbody><tr><td colspan="4" style="padding:20px;color:var(--text-muted);">Loading...</td></tr></tbody>
+    </table>
+    <div class="source-note">Source: 2026 charter cost guides — Paramount Business Jets, Amalfi Jets, JetVice, Iona Jets, BLADE Air. Rates vary by operator, aircraft year, and lead time.</div>
+  </div>
+
+  <div class="footer">
+    <div>JETLUXECO LLC · Broward County, FL · <a href="mailto:luis@jetluxeco.com">luis@jetluxeco.com</a></div>
+    <div>Market estimates only — confirm via direct operator quotes.</div>
+  </div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const fmt = (n) => '$' + Math.round(n).toLocaleString('en-US');
+
+async function loadRateCard() {
+  const res = await fetch('/api/pricing/rate-card');
+  const d = await res.json();
+  const tbody = $('rates-table').querySelector('tbody');
+  tbody.innerHTML = Object.entries(d.categories).map(([k, c]) => `
+    <tr>
+      <td>
+        <div class="cat-label">${c.label}</div>
+        <div class="cat-examples">${c.examples}</div>
+      </td>
+      <td class="rate-cell">${c.cruise_kt} kt<br><span style="color:var(--text-muted);font-size:11px;">${c.pax_typ} pax typical</span></td>
+      <td class="rate-cell" style="color:var(--gold);"><strong>$${c.wholesale_low.toLocaleString()} – $${c.wholesale_high.toLocaleString()}</strong></td>
+      <td class="rate-cell">$${c.retail_low.toLocaleString()} – $${c.retail_high.toLocaleString()}</td>
+    </tr>`).join('');
+}
+
+async function calcQuote() {
+  const aircraft = $('c-aircraft').value.trim();
+  const hours = parseFloat($('c-hours').value);
+  const margin = parseFloat($('c-margin').value) / 100;
+  if (!aircraft || !hours) { $('c-result').innerHTML = '<div class="verdict red">Fill in all fields</div>'; return; }
+  const res = await fetch(`/api/pricing/estimate?aircraft=${encodeURIComponent(aircraft)}&hours=${hours}`);
+  const d = await res.json();
+  if (d.error) { $('c-result').innerHTML = `<div class="verdict red">${d.error}</div>`; return; }
+  const w = d.wholesale_range, fees = d.fees_at_mid;
+  const clientMid = Math.round(fees.total * (1 + margin));
+  $('c-result').innerHTML = `
+    <div class="result">
+      <div style="font-size:11px;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;">${w.label} · ${w.hours} hr</div>
+      <div class="big">${fmt(clientMid)}</div>
+      <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;">suggested client quote (mid)</div>
+      <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:14px;">
+        <div class="row"><span>Wholesale base (mid)</span><span class="val">${fmt(w.mid)}</span></div>
+        <div class="row"><span>+ FET 7.5%</span><span class="val">${fmt(fees.fet_7_5pct)}</span></div>
+        <div class="row"><span>+ Fuel surcharge</span><span class="val">${fmt(fees.fuel_surcharge)}</span></div>
+        <div class="row"><span>+ Landing & handling</span><span class="val">${fmt(fees.landing_handling)}</span></div>
+        <div class="row"><span>+ Crew per diem</span><span class="val">${fmt(fees.crew_per_diem)}</span></div>
+        <div class="row"><span>+ Catering</span><span class="val">${fmt(fees.catering)}</span></div>
+        <div class="row" style="border-top:1px solid var(--border);padding-top:8px;margin-top:4px;"><span><strong>Your cost (mid)</strong></span><span class="val"><strong>${fmt(fees.total)}</strong></span></div>
+        <div class="row"><span>+ Your margin (${(margin*100).toFixed(1)}%)</span><span class="val">${fmt(clientMid - fees.total)}</span></div>
+        <div class="row" style="border-top:1px solid var(--gold);padding-top:8px;margin-top:4px;"><span><strong style="color:var(--gold);">Client quote</strong></span><span class="val"><strong style="color:var(--gold);">${fmt(clientMid)}</strong></span></div>
+      </div>
+      <div style="margin-top:12px;font-size:11px;color:var(--text-muted);">
+        Range: ${fmt(d.fees_at_low.total * (1+margin))} (low end) – ${fmt(d.fees_at_high.total * (1+margin))} (high end)
+      </div>
+    </div>`;
+}
+
+async function validateQuote() {
+  const aircraft = $('v-aircraft').value.trim();
+  const hours = parseFloat($('v-hours').value);
+  const quoted = parseFloat($('v-quoted').value);
+  if (!aircraft || !hours || !quoted) { $('v-result').innerHTML = '<div class="verdict red">Fill in all fields</div>'; return; }
+  const res = await fetch(`/api/pricing/validate?aircraft=${encodeURIComponent(aircraft)}&hours=${hours}&quoted=${quoted}`);
+  const d = await res.json();
+  if (d.error) { $('v-result').innerHTML = `<div class="verdict red">${d.error}</div>`; return; }
+  let cls = 'yellow';
+  if (d.verdict.includes('good deal') || d.verdict.includes('at market')) cls = 'green';
+  if (d.verdict.includes('above market') || d.verdict.includes('walk away')) cls = 'red';
+  $('v-result').innerHTML = `
+    <div class="result">
+      <div style="font-size:11px;letter-spacing:2px;color:var(--text-muted);text-transform:uppercase;">${d.category} · ${d.hours} hr</div>
+      <div class="big">${fmt(d.quoted)}</div>
+      <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;">operator quote</div>
+      <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:14px;">
+        <div class="row"><span>Market low (with fees)</span><span class="val">${fmt(d.market_low)}</span></div>
+        <div class="row"><span>Market mid</span><span class="val">${fmt(d.market_mid)}</span></div>
+        <div class="row"><span>Market high</span><span class="val">${fmt(d.market_high)}</span></div>
+        <div class="row" style="border-top:1px solid var(--border);padding-top:8px;margin-top:4px;"><span>Delta from mid</span><span class="val" style="color:${d.delta_from_mid_pct >= 0 ? 'var(--red)' : 'var(--green)'};">${d.delta_from_mid_pct > 0 ? '+' : ''}${d.delta_from_mid_pct}%</span></div>
+      </div>
+      <div class="verdict ${cls}">${d.verdict}</div>
+    </div>`;
+}
+
+loadRateCard();
+</script>
+</body>
+</html>
