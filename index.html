@@ -66,8 +66,11 @@
   .card { background: var(--surface); border: 1px solid var(--border); overflow: hidden; transition: all .2s; display: flex; flex-direction: column; }
   .card.fl { border-left: 3px solid var(--gold); }
   .card:hover { border-color: var(--gold); transform: translateY(-1px); }
-  .card-img { height: 140px; background: var(--surface-2); background-size: cover; background-position: center; position: relative; }
+  .card-img { height: 140px; overflow: hidden; background: var(--surface-2); background-size: cover; background-position: center; position: relative; }
   .card-img.placeholder { display: flex; align-items: center; justify-content: center; font-size: 10px; letter-spacing: 3px; color: var(--text-muted); }
+  
+  .mini-map { width: 100%; height: 140px; display: block; }
+  .card-photo-inset { position: absolute; bottom: 8px; right: 8px; width: 80px; height: 54px; object-fit: cover; border: 2px solid rgba(174, 118, 64, 0.7); border-radius: 3px; box-shadow: 0 2px 8px rgba(0,0,0,.6); }
   .card-src { position: absolute; top: 8px; right: 8px; font-size: 9px; letter-spacing: 2px; padding: 3px 8px; background: rgba(10,10,10,.85); color: var(--gold); text-transform: uppercase; border: 1px solid var(--gold); }
   .card-fl { position: absolute; top: 8px; left: 8px; font-size: 9px; letter-spacing: 2px; padding: 3px 8px; background: var(--gold); color: #000; text-transform: uppercase; font-weight: 700; }
   .card-body { padding: 18px; flex: 1; display: flex; flex-direction: column; }
@@ -266,9 +269,10 @@ function renderGrid(filtered){
   if (!filtered.length) { grid.innerHTML = '<div class="empty">No legs match your filters.</div>'; return; }
   grid.innerHTML = filtered.slice(0, 300).map(l => {
     const fl = isFL(l);
-    const img = l.img
-      ? `<div class="card-img" style="background-image:url('${esc(l.img)}')"><div class="card-src">${esc(l.src)}</div>${fl?'<div class="card-fl">FL ★</div>':''}</div>`
-      : `<div class="card-img placeholder">NO PHOTO<div class="card-src">${esc(l.src)}</div>${fl?'<div class="card-fl">FL ★</div>':''}</div>`;
+    // Route map + optional aircraft photo overlay
+    const miniMapHtml = buildMiniMap(l);
+    const photoOverlay = l.img ? `<img src="${esc(l.img)}" class="card-photo-inset" onerror="this.style.display='none'">` : '';
+    const img = `<div class="card-img" style="background:#0a0a0a;position:relative">${miniMapHtml}${photoOverlay}<div class="card-src">${esc(l.src)}</div>${fl?'<div class="card-fl">FL ★</div>':''}</div>`;
     let price;
     if (l.p) {
       const net = l.p * (1 - disc);
@@ -436,6 +440,56 @@ document.addEventListener('DOMContentLoaded', () => {
   $('stat-photos').textContent = data.filter(l => l.img).length;
   apply();
 });
+
+function buildMiniMap(l) {
+  const coords = window.__COORDS__ || {};
+  const oc = coords[l.o]; const dc = coords[l.d];
+  if (!oc || !dc) return '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#888;font-size:10px;letter-spacing:2px">' + esc(l.o||'') + ' → ' + esc(l.d||'') + '</div>';
+  const W = 400, H = 140;
+  const pad = 25;
+  const spanLat = Math.max(3, Math.abs(oc.lat - dc.lat));
+  const spanLon = Math.max(3, Math.abs(oc.lon - dc.lon));
+  const cLat = (oc.lat + dc.lat)/2;
+  const cLon = (oc.lon + dc.lon)/2;
+  const minLat = cLat - spanLat*0.7, maxLat = cLat + spanLat*0.7;
+  const minLon = cLon - spanLon*0.9, maxLon = cLon + spanLon*0.9;
+  const px = (lat, lon) => [
+    ((lon - minLon) / (maxLon - minLon)) * (W - 2*pad) + pad,
+    H - (((lat - minLat) / (maxLat - minLat)) * (H - 2*pad) + pad),
+  ];
+  const [x1, y1] = px(oc.lat, oc.lon);
+  const [x2, y2] = px(dc.lat, dc.lon);
+  const mx = (x1+x2)/2, my = (y1+y2)/2;
+  const dx = x2-x1, dy = y2-y1;
+  const len = Math.max(1, Math.sqrt(dx*dx+dy*dy));
+  const nx = -dy/len, ny = dx/len;
+  const cx = mx + nx*20, cy = my + ny*20;
+  const isFla = FL_ICAOS.includes(l.o) || FL_ICAOS.includes(l.d);
+  const routeColor = isFla ? '#AE7640' : '#5cb85c';
+  return `<svg class="mini-map" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="glow-o-${l.o}-${l.d}">
+        <stop offset="0%" stop-color="${routeColor}" stop-opacity="0.5"/>
+        <stop offset="100%" stop-color="${routeColor}" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <rect width="${W}" height="${H}" fill="#0a0a0a"/>
+    <g stroke="#2a2a2a" stroke-width="0.5" opacity="0.5">
+      <line x1="0" y1="${H/3}" x2="${W}" y2="${H/3}"/>
+      <line x1="0" y1="${2*H/3}" x2="${W}" y2="${2*H/3}"/>
+      <line x1="${W/3}" y1="0" x2="${W/3}" y2="${H}"/>
+      <line x1="${2*W/3}" y1="0" x2="${2*W/3}" y2="${H}"/>
+    </g>
+    <circle cx="${x1}" cy="${y1}" r="18" fill="url(#glow-o-${l.o}-${l.d})"/>
+    <circle cx="${x2}" cy="${y2}" r="18" fill="url(#glow-o-${l.o}-${l.d})"/>
+    <path d="M${x1} ${y1} Q ${cx} ${cy} ${x2} ${y2}" stroke="${routeColor}" stroke-width="2" fill="none" stroke-dasharray="4 3" stroke-linecap="round"/>
+    <circle cx="${x1}" cy="${y1}" r="5" fill="#5cb85c" stroke="#0a0a0a" stroke-width="2"/>
+    <circle cx="${x2}" cy="${y2}" r="5" fill="${routeColor}" stroke="#0a0a0a" stroke-width="2"/>
+    <text x="${x1}" y="${y1-10}" fill="#f5f5f5" font-family="Helvetica,Arial" font-size="11" text-anchor="middle" font-weight="600">${l.o}</text>
+    <text x="${x2}" y="${y2-10}" fill="#f5f5f5" font-family="Helvetica,Arial" font-size="11" text-anchor="middle" font-weight="600">${l.d}</text>
+  </svg>`;
+}
+
 </script>
 
 </body>

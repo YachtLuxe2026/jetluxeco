@@ -1,0 +1,30 @@
+# JETLUXECO — Netlify configuration
+# Auto-deploy from GitHub repo YachtLuxe2026/jetluxeco
+
+[build]
+  # No build step required — index.html is the entire site
+  publish = "."
+  command = "echo 'No build step'"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Cache-Control = "public, max-age=300"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=60"
+
+# Redirect old paths to home
+[[redirects]]
+  from = "/cockpit"
+  to = "/"
+  status = 302
+
+[[redirects]]
+  from = "/legs"
+  to = "/"
+  status = 302
