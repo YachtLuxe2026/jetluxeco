@@ -1,0 +1,41 @@
+name: Refresh cockpit data
+
+on:
+  schedule:
+    - cron: '0 */4 * * *'   # every 4 hours
+  workflow_dispatch:         # allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deps
+        run: pip install psycopg2-binary
+
+      - name: Refresh index.html with fresh legs
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python refresh_data.py
+
+      - name: Commit updated index.html
+        run: |
+          git config user.name "JETLUXECO Refresh Bot"
+          git config user.email "bot@jetluxeco.com"
+          git add index.html
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Refresh cockpit data ($(date -u '+%Y-%m-%d %H:%M UTC'))"
+            git push
+          fi
